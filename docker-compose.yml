@@ -1,0 +1,41 @@
+services:
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   ports:
+  #     - "8080:80"
+  #   restart: always
+  #   depends_on:
+  #     - php
+    
+  #   volumes:
+  #     - ./moodle:/usr/share/nginx/html/moodle/
+  #     - ./nginx/core/nginx.conf:/etc/nginx/nginx.conf
+  php:
+    build: ./php
+    container_name: php
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    restart: always
+    volumes:
+      - ./moodle:/usr/share/nginx/html/moodle/
+      - moodledata:/usr/share/nginx/html/moodledata/
+
+  mysql57:
+    image: mysql:5.7
+    container_name: mysql57
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=moodle
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_USER=moodleuser
+      - MYSQL_PASSWORD=yourpassword
+    volumes:
+      - mysql57-data:/var/lib/mysql
+
+volumes:
+  mysql57-data:
+  moodledata:
