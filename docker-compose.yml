@@ -1,56 +1,52 @@
 services:
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   ports:
-  #     - "8080:80"
-  #   restart: always
-  #   depends_on:
-  #     - php
-    
-  #   volumes:
-  #     - ./moodle:/usr/share/nginx/html/moodle/
-  #     - ./nginx/core/nginx.conf:/etc/nginx/nginx.conf
-  php:
-    build: ./php
-    container_name: php
+  php-8.3:
+    build: ./php-8.3
+    container_name: php-8.3
+    command: php -S 0.0.0.0:${MOODLE_PORT} -t /var/www/html/moodle/
     ports:
-      - "8000:8000"
-      - "9000:9000"
+      - "${MOODLE_PORT}:${MOODLE_PORT}"
+    environment:
+      XDEBUG_CONFIG: client_host=host.docker.internal
     restart: always
     volumes:
-      - ./moodle:/usr/share/nginx/html/moodle/
-      - moodledata:/usr/share/nginx/html/moodledata/
+      - ./moodle:/var/www/html/moodle/
+      - ./moodledata:/var/www/html/moodledata/
+      - ./php-8.3/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - mysql-8.4
+    profiles:
+      - moodle-4.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
-  mysql57:
+  mysql-5.7:
     image: mysql:5.7
-    container_name: mysql57
+    container_name: mysql-5.7
     restart: always
     ports:
-      - "3306:3306"
+      - "${MYSQL_5_7_PORT}:3306"
     environment:
-      - MYSQL_DATABASE=moodle
-      - MYSQL_ROOT_PASSWORD=123
-      - MYSQL_USER=moodleuser
-      - MYSQL_PASSWORD=yourpassword
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - mysql57-data:/var/lib/mysql
+      - ./mysql-5.7/data:/var/lib/mysql
+    profiles:
+      - moodle-3.8
 
-  mysql8:
-    image: mysql:latest
-    container_name: mysql8
+  mysql-8.4:
+    image: mysql:8.4
+    container_name: mysql-8.4
     restart: always
     ports:
-      - "3306:3306"
+      - "${MYSQL_8_4_PORT}:3306"
     environment:
-      - MYSQL_DATABASE=moodle
-      - MYSQL_ROOT_PASSWORD=123
-      - MYSQL_USER=moodleuser
-      - MYSQL_PASSWORD=yourpassword
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - mysql8-data:/var/lib/mysql
-
-volumes:
-  mysql57-data:
-  mysql8-data:
-  moodledata:
+      - ./mysql-8.4/data:/var/lib/mysql
+    profiles:
+      - moodle-4.4
