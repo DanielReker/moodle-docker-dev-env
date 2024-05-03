@@ -36,6 +36,21 @@ services:
     volumes:
       - mysql57-data:/var/lib/mysql
 
+  mysql8:
+    image: mysql:latest
+    container_name: mysql8
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=moodle
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_USER=moodleuser
+      - MYSQL_PASSWORD=yourpassword
+    volumes:
+      - mysql8-data:/var/lib/mysql
+
 volumes:
   mysql57-data:
+  mysql8-data:
   moodledata:
