@@ -1,19 +1,21 @@
 FROM php:8.3-fpm
 
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libpng-dev \
-    libicu-dev \
-    libxml2-dev
+RUN apt-get update
+RUN apt-get install -y libzip-dev
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y libicu-dev
+RUN apt-get install -y libxml2-dev
+RUN apt-get install -y unzip
+RUN apt-get install -y curl
 
-RUN docker-php-ext-install \
-    mysqli \
-    zip \
-    gd \
-    intl \
-    exif \
-    soap \
-    opcache
+
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install zip
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install intl
+RUN docker-php-ext-install exif
+RUN docker-php-ext-install soap
+RUN docker-php-ext-install opcache
 
 
 RUN pecl channel-update pecl.php.net
@@ -21,14 +23,15 @@ RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 
 
-ENV PHP_IDE_CONFIG 'serverName=moodle-docker-server'
-RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.start_with_request = yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.client_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN echo "xdebug.idekey = PHPSTORM" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN curl -sS https://getcomposer.org/installer | php
+RUN mv composer.phar /usr/local/bin/composer
+RUN /usr/local/bin/composer self-update
 
-#COPY ./php.ini "$PHP_INI_DIR/php.ini"
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-#ENTRYPOINT [ "/usr/local/bin/php", "-S", "0.0.0.0:8000", "-t", "/usr/share/nginx/html/moodle/" ]
+RUN composer global config minimum-stability dev --no-interaction
+RUN composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true --no-interaction
+RUN composer global require moodlehq/moodle-cs --no-interaction
+RUN composer global update --no-interaction
+
+ENV PATH="${PATH}:/root/.composer/vendor/bin"
