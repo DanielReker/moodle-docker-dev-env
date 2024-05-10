@@ -23,7 +23,7 @@ services:
     container_name: database
     restart: always
     ports:
-      - "${MYSQL_8_4_PORT}:3306"
+      - "${MYSQL_PORT}:3306"
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
