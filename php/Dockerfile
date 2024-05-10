@@ -1,4 +1,4 @@
-FROM php:8.0-cli
+FROM php:8.0-fpm
 
 RUN apt-get update
 RUN apt-get install -y libzip-dev
@@ -7,6 +7,8 @@ RUN apt-get install -y libicu-dev
 RUN apt-get install -y libxml2-dev
 RUN apt-get install -y unzip
 RUN apt-get install -y curl
+RUN apt-get install -y libonig-dev
+RUN apt-get install -y libpq-dev
 
 
 RUN docker-php-ext-install mysqli
