@@ -1,7 +1,7 @@
 services:
-  php-8.3:
-    build: ./php-8.3
-    container_name: php-8.3
+  php:
+    build: ./php
+    container_name: php
     command: php -S 0.0.0.0:${MOODLE_PORT} -t /var/www/html/moodle/
     ports:
       - "${MOODLE_PORT}:${MOODLE_PORT}"
@@ -11,33 +11,16 @@ services:
     volumes:
       - ./moodle:/var/www/html/moodle/
       - ./moodledata:/var/www/html/moodledata/
-      - ./php-8.3/configs:/usr/local/etc/php
+      - ./php/configs:/usr/local/etc/php
     depends_on:
-      - mysql-8.4
-    profiles:
-      - moodle-4.4
+      - database
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  mysql-5.7:
-    image: mysql:5.7
-    container_name: mysql-5.7
-    restart: always
-    ports:
-      - "${MYSQL_5_7_PORT}:3306"
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    volumes:
-      - ./mysql-5.7/data:/var/lib/mysql
-    profiles:
-      - moodle-3.8
 
-  mysql-8.4:
+  database:
     image: mysql:8.4
-    container_name: mysql-8.4
+    container_name: database
     restart: always
     ports:
       - "${MYSQL_8_4_PORT}:3306"
@@ -47,6 +30,4 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ./mysql-8.4/data:/var/lib/mysql
-    profiles:
-      - moodle-4.4
+      - ./mysql/data:/var/lib/mysql
