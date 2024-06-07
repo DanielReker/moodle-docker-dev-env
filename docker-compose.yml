@@ -2,9 +2,9 @@ services:
   php:
     build: ./php
     container_name: php
-    command: php -S 0.0.0.0:${MOODLE_PORT} -t /var/www/html/moodle/
+    command: php -S 0.0.0.0:8000 -t /var/www/html/moodle/
     ports:
-      - "${MOODLE_PORT}:${MOODLE_PORT}"
+      - "${MOODLE_PORT}:8000"
     environment:
       PHP_IDE_CONFIG: "serverName=${PHPSTORM_SERVER_NAME}"
     restart: always
@@ -13,21 +13,35 @@ services:
       - ./moodledata:/var/www/html/moodledata/
       - ./php/configs:/usr/local/etc/php
     depends_on:
-      - database
+      - mysql84
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 
-  database:
+  mysql84:
     image: mysql:8.4
-    container_name: database
-    restart: always
+    container_name: mysql84
+    restart: unless-stopped
     ports:
-      - "${MYSQL_PORT}:3306"
+      - "${MYSQL_84_PORT}:3306"
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - ./mysql/data:/var/lib/mysql
+      - ./mysql84/data:/var/lib/mysql
+
+  mysql57:
+    image: mysql:5.7
+    container_name: mysql57
+    restart: unless-stopped
+    ports:
+      - "${MYSQL_57_PORT}:3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./mysql57/data:/var/lib/mysql

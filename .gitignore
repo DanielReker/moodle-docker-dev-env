@@ -1,4 +1,5 @@
 moodle
-mysql/data/*
+mysql84/data/*
+mysql57/data/*
 moodledata/*
 .idea/
