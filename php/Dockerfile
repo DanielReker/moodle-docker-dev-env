@@ -9,6 +9,7 @@ RUN apt-get install -y unzip
 RUN apt-get install -y curl
 RUN apt-get install -y libonig-dev
 RUN apt-get install -y libpq-dev
+RUN apt-get install -y locales locales-all
 
 
 RUN docker-php-ext-install mysqli

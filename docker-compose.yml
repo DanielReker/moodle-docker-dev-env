@@ -12,8 +12,6 @@ services:
       - ./moodle:/var/www/html/moodle/
       - ./moodledata:/var/www/html/moodledata/
       - ./php/configs:/usr/local/etc/php
-    depends_on:
-      - mysql84
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
