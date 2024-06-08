@@ -12,6 +12,7 @@ RUN apt-get install -y libpq-dev
 
 
 RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pgsql
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install intl
