@@ -20,6 +20,7 @@ RUN docker-php-ext-install intl
 RUN docker-php-ext-install exif
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install opcache
+RUN docker-php-ext-install mbstring
 
 
 RUN pecl channel-update pecl.php.net
