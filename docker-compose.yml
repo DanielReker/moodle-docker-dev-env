@@ -35,7 +35,7 @@ services:
     container_name: postgres
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${DB_PORT}:5432"
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
