@@ -9,14 +9,14 @@ MOODLE_GIT_URL="git://git.moodle.org/moodle.git"
 show_help() {
   echo "Usage: $(basename $0) [OPTIONS]"
   echo "Options:"
-  echo "  -h, --help      Display this help message"
-  echo "  -m, --moodle    Moodle version (supported versions: $(IFS=, ; echo "${SUPPORTED_MOODLE_VERSIONS[*]}"))"
-  echo "  -d, --dbms      DBMS (supported DBMS: $(IFS=, ; echo "${SUPPORTED_DBMS[*]}"))"
+  echo "  -h, --help    Display this help message"
+  echo "  -m, --moodle  Moodle version (supported versions: $(IFS=, ; echo "${SUPPORTED_MOODLE_VERSIONS[*]}"))"
+  echo "  -d, --dbms    DBMS (supported DBMS: $(IFS=, ; echo "${SUPPORTED_DBMS[*]}"))"
 }
 
 generate_start_script() {
   echo "#!/bin/bash
-    docker compose up -d $1 $2" > start.sh
+    docker compose up -d --build $1 $2" > start.sh
   chmod +x start.sh
 }
 
