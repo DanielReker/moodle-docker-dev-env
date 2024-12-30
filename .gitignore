@@ -2,3 +2,5 @@ moodle/
 db-data/
 moodledata/
 .idea/
+start.sh
+stop.sh
