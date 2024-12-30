@@ -27,14 +27,28 @@ generate_stop_script() {
 }
 
 make_config_php() {
-  docker compose exec $PHP_SERVICE \
-    php /var/www/html/moodle/admin/cli/install.php --skip-database --non-interactive \
-    --wwwroot="http://$MOODLE_HOST:$MOODLE_PORT" \
-    --dbtype=$MOODLE_DB_TYPE \
-    --dbhost=$DBMS \
-    --dbuser=$DB_USER \
-    --dbpass=$DB_PASSWORD \
-    --dbport=$DB_INTERNAL_PORT
+  echo ""
+  echo "Making config.php..."
+  until docker compose exec $PHP_SERVICE \
+            php /var/www/html/moodle/admin/cli/install.php --skip-database --non-interactive \
+            --wwwroot="http://$MOODLE_HOST:$MOODLE_PORT" \
+            --dbtype=$MOODLE_DB_TYPE \
+            --dbhost=$DBMS \
+            --dbuser=$DB_USER \
+            --dbpass=$DB_PASSWORD \
+            --dbport=$DB_INTERNAL_PORT > /dev/null 2>&1
+  do
+      ((c++)) && ((c==30)) && { echo "Failed to create config.php"; return 1; }
+      sleep 1
+  done
+  echo "config.php created successfully"
+  return 0
+}
+
+composer_install() {
+  echo ""
+  echo "Running composer install..."
+  docker compose exec -w /var/www/html/moodle $PHP_SERVICE composer install
 }
 
 prepare_moodle_directory() {
@@ -147,23 +161,17 @@ generate_stop_script
 
 rm -rf moodledata/
 mkdir moodledata/
-prepare_moodle_directory $MOODLE_GIT_BRANCH && echo "Success"
+prepare_moodle_directory $MOODLE_GIT_BRANCH
 
 rm -rf db-data/
 
 echo ""
 echo "Running Docker Compose..."
-echo ""
 ./start.sh
 
-# TODO: Check if database is ready
-sleep 2
-
-echo ""
-echo "Making config.php..."
-echo ""
 make_config_php
+composer_install
 
 echo ""
+echo "Docker development environment for Moodle is ready!"
 echo "Moodle URL: http://$MOODLE_HOST:$MOODLE_PORT"
-echo ""
