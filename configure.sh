@@ -38,17 +38,16 @@ make_config_php() {
             --dbpass=$DB_PASSWORD \
             --dbport=$DB_INTERNAL_PORT > /dev/null 2>&1
   do
-      ((c++)) && ((c==30)) && { echo "Failed to create config.php"; return 1; }
+      ((c++)) && ((c==30)) && { echo "Failed to create config.php!"; exit 1; }
       sleep 1
   done
   echo "config.php created successfully"
-  return 0
 }
 
 composer_install() {
   echo ""
   echo "Running composer install..."
-  docker compose exec -w /var/www/html/moodle $PHP_SERVICE composer install
+  docker compose exec -w /var/www/html/moodle $PHP_SERVICE composer install || { echo "composer install failed!"; exit 1; }
 }
 
 prepare_moodle_directory() {
