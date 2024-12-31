@@ -15,6 +15,22 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  php83:
+    build: ./php83
+    container_name: php83
+    command: php -S 0.0.0.0:8000 -t /var/www/html/moodle/
+    ports:
+      - "${MOODLE_PORT}:8000"
+    environment:
+      PHP_IDE_CONFIG: "serverName=${PHPSTORM_SERVER_NAME}"
+    restart: always
+    volumes:
+      - ./moodle:/var/www/html/moodle/
+      - ./moodledata:/var/www/html/moodledata/
+      - ./php83/configs:/usr/local/etc/php
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 
   mysql:
     image: mysql:latest
